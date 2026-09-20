@@ -1,0 +1,7 @@
+name = "asian-games-api"
+main = "worker.js"
+compatibility_date = "2026-09-20"
+
+[[kv_namespaces]]
+binding = "SCHEDULE_KV"
+id = "c237911421c0452fb4b6471645037c3b"
