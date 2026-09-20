@@ -1,769 +1,309 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asian Games Schedule & Live Broadcast Hub | 亞洲運動會賽程與直播中心</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter & Noto Sans TC -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f4ff',
-                            100: '#e0e9fe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            900: '#1e3a8a',
-                            gold: '#f59e0b',
-                            accent: '#ff4757'
-                        },
-                        darkbg: '#0f172a',
-                        cardbg: '#1e293b'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
-        }
-        .glass-card {
-            background: rgba(30, 41, 59, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .glow-effect {
-            box-shadow: 0 0 20px -5px rgba(59, 130, 246, 0.3);
-        }
-        .animate-pulse-slow {
-            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asian Games 2026 Schedule & Live Stream Directory</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
+    .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+  </style>
 </head>
-<body class="bg-darkbg text-slate-100 min-h-full font-sans flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+<body class="min-h-screen pb-12">
 
-    <header class="sticky top-0 z-50 glass-card border-b border-slate-800 shadow-xl">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
-            <!-- Logo & Title -->
-            <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-start">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-indigo-500 to-amber-400 flex items-center justify-center text-white shadow-lg transform hover:rotate-6 transition-transform">
-                        <i class="fa-solid fa-trophy text-xl"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400" id="ui-app-title">
-                            ASIAN GAMES HUB
-                        </h1>
-                        <p class="text-xs text-brand-500 font-medium tracking-wide uppercase" id="ui-app-subtitle">
-                            Live Schedule & Broadcasters
-                        </p>
-                    </div>
-                </div>
-                <!-- Mobile Language & Region Trigger -->
-                <div class="flex md:hidden items-center space-x-2">
-                    <button id="btn-lang-toggle-mobile" onclick="toggleLanguage()" class="px-2.5 py-1 text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-brand-500 transition">
-                        繁體中文
-                    </button>
-                </div>
-            </div>
-
-            <!-- Controls: Region Selector, Timezone Toggle & Language Switcher -->
-            <div class="flex flex-wrap items-center justify-end gap-3 w-full md:w-auto">
-                <!-- Region Selector -->
-                <div class="flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-700/60 shadow-inner flex-1 sm:flex-initial">
-                    <i class="fa-solid fa-earth-asia text-amber-400 text-sm"></i>
-                    <label for="region-select" class="text-xs text-slate-400 font-medium hidden sm:inline" id="ui-label-region">Region:</label>
-                    <select id="region-select" onchange="handleRegionChange(this.value)" class="bg-transparent text-xs sm:text-sm font-semibold text-slate-100 focus:outline-none cursor-pointer w-full">
-                        <option value="HK" class="bg-slate-800 text-white">🇭🇰 Hong Kong (香港)</option>
-                        <option value="TW" class="bg-slate-800 text-white">🇹🇼 Taiwan (台灣)</option>
-                        <option value="CN" class="bg-slate-800 text-white">🇨🇳 China (中國 mainland)</option>
-                        <option value="JP" class="bg-slate-800 text-white">🇯🇵 Japan (日本)</option>
-                        <option value="KR" class="bg-slate-800 text-white">🇰🇷 South Korea (韓國)</option>
-                        <option value="SG" class="bg-slate-800 text-white">🇸🇬 Singapore (新加坡)</option>
-                        <option value="MY" class="bg-slate-800 text-white">🇲🇾 Malaysia (馬來西亞)</option>
-                        <option value="INT" class="bg-slate-800 text-white">🌐 Global / International</option>
-                    </select>
-                </div>
-
-                <!-- Timezone Display Selector -->
-                <div class="flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-700/60 shadow-inner">
-                    <i class="fa-regular fa-clock text-brand-500 text-sm"></i>
-                    <select id="timezone-select" onchange="handleTimezoneChange(this.value)" class="bg-transparent text-xs sm:text-sm font-semibold text-slate-100 focus:outline-none cursor-pointer">
-                        <option value="LOCAL" class="bg-slate-800 text-white" id="opt-tz-local">My Local Time</option>
-                        <option value="HOST" class="bg-slate-800 text-white">Host Time (UTC+8)</option>
-                    </select>
-                </div>
-
-                <!-- Desktop Language Switcher Button -->
-                <button id="btn-lang-toggle" onclick="toggleLanguage()" class="hidden md:flex items-center space-x-2 px-3 py-1.5 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 rounded-xl transition shadow-sm">
-                    <i class="fa-solid fa-language text-base text-brand-500"></i>
-                    <span id="ui-lang-text">繁體中文</span>
-                </button>
-            </div>
+  <!-- Header Section -->
+  <header class="glass sticky top-0 z-50 border-b border-slate-700/50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="bg-red-600 text-white p-2 rounded-lg font-black text-xl tracking-wider">AG2026</div>
+        <div>
+          <h1 id="ui-title" class="text-xl font-bold">亞運會賽程與各國直播頻道</h1>
+          <p id="ui-subtitle" class="text-xs text-slate-400">Aichi-Nagoya 2026 Live Schedule & Broadcasters</p>
         </div>
-    </header>
+      </div>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
-        <!-- Hero Section -->
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-900/40 via-indigo-900/40 to-slate-900/80 border border-slate-800 p-6 md:p-8 mb-8 shadow-2xl">
-            <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div>
-                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-400 text-xs font-semibold mb-3">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                        <span id="ui-badge-live">LIVE EVENT COVERAGE</span>
-                    </div>
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight" id="ui-hero-title">
-                        Asian Games Multi-Region Schedule & Channels
-                    </h2>
-                    <p class="text-slate-400 text-sm mt-2 max-w-2xl" id="ui-hero-desc">
-                        Select your location to view available local television and digital streaming rights. Track events in real-time converted to your local time zone.
-                    </p>
-                </div>
-                <!-- Quick Stats Badge -->
-                <div class="flex items-center gap-4 bg-slate-900/90 p-4 rounded-xl border border-slate-800 shrink-0">
-                    <div class="text-center px-2">
-                        <p class="text-xs text-slate-400 uppercase font-semibold" id="ui-stat-sports">Sports</p>
-                        <p class="text-xl font-black text-amber-400" id="stat-count-sports">8</p>
-                    </div>
-                    <div class="w-px h-8 bg-slate-800"></div>
-                    <div class="text-center px-2">
-                        <p class="text-xs text-slate-400 uppercase font-semibold" id="ui-stat-events">Events</p>
-                        <p class="text-xl font-black text-brand-500" id="stat-count-events">12</p>
-                    </div>
-                    <div class="w-px h-8 bg-slate-800"></div>
-                    <div class="text-center px-2">
-                        <p class="text-xs text-slate-400 uppercase font-semibold" id="ui-stat-channels">Region Channels</p>
-                        <p class="text-xl font-black text-emerald-400" id="stat-count-channels">30+</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <div class="flex items-center gap-3">
+        <!-- Language Selector -->
+        <button id="lang-btn" onclick="toggleLanguage()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm font-medium border border-slate-600 transition">
+          <i class="fa-solid fa-language mr-1"></i> <span id="lang-label">English</span>
+        </button>
 
-        <section class="glass-card rounded-2xl p-4 sm:p-5 mb-8 shadow-xl border border-slate-800">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Search Input -->
-                <div class="relative">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                    <input type="text" id="search-input" oninput="applyFilters()" placeholder="Search teams, sports, venues..." class="w-full bg-slate-900/90 text-sm text-slate-100 pl-10 pr-4 py-2.5 rounded-xl border border-slate-700/80 focus:outline-none focus:border-brand-500 transition placeholder-slate-500">
-                </div>
+        <!-- Timezone Selector -->
+        <select id="tz-select" onchange="renderSchedule()" class="px-3 py-1.5 rounded-lg bg-slate-800 text-sm border border-slate-600 focus:outline-none">
+          <option value="local">Local Time (當前時區)</option>
+          <option value="UTC+8">Host Time (UTC+8 亞運大會時間)</option>
+        </select>
+      </div>
+    </div>
+  </header>
 
-                <!-- Sport Discipline Filter -->
-                <div>
-                    <select id="sport-filter" onchange="applyFilters()" class="w-full bg-slate-900/90 text-sm text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-700/80 focus:outline-none focus:border-brand-500 transition cursor-pointer">
-                        <option value="ALL" id="opt-sport-all">All Sports / 所有項目</option>
-                        <!-- Dynamic options loaded via JS -->
-                    </select>
-                </div>
+  <!-- Controls & Region Broadcaster Switcher -->
+  <main class="max-w-7xl mx-auto px-4 mt-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      
+      <!-- Country / Region Broadcaster Switcher -->
+      <div class="glass p-4 rounded-xl">
+        <label id="lbl-region" class="block text-xs font-semibold text-slate-400 mb-2 uppercase">Select Your Country / Region (選擇所在地區)</label>
+        <select id="region-select" onchange="renderSchedule()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm font-semibold text-red-400 focus:outline-none focus:border-red-500">
+          <option value="HK">🇭🇰 Hong Kong (香港 - HOY TV / TVB / RTHK)</option>
+          <option value="TW">🇹🇼 Taiwan (台灣 - 愛爾達 ELTA / 公視 PTS / 中視)</option>
+          <option value="CN">🇨🇳 China Mainland (中國大陸 - 央視 CCTV-5 / 咪咕 Migu)</option>
+          <option value="JP">🇯🇵 Japan (日本 - TBS / NHK / TVer)</option>
+          <option value="KR">🇰🇷 South Korea (韓國 - KBS / MBC / SBS)</option>
+          <option value="SG">🇸🇬 Singapore (新加坡 - Mewatch / Mediacorp)</option>
+          <option value="MY">🇲🇾 Malaysia (馬來西亞 - Astro Arena / RTM)</option>
+          <option value="INT">🌐 International / Others (其他地區)</option>
+        </select>
+      </div>
 
-                <!-- Participant / Country Filter -->
-                <div>
-                    <select id="participant-filter" onchange="applyFilters()" class="w-full bg-slate-900/90 text-sm text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-700/80 focus:outline-none focus:border-brand-500 transition cursor-pointer">
-                        <option value="ALL" id="opt-team-all">All Participants / 所有參賽者機關</option>
-                        <!-- Dynamic options loaded via JS -->
-                    </select>
-                </div>
+      <!-- Sport Filter -->
+      <div class="glass p-4 rounded-xl">
+        <label id="lbl-sport" class="block text-xs font-semibold text-slate-400 mb-2 uppercase">Filter by Sport (按體育項目篩選)</label>
+        <select id="sport-select" onchange="renderSchedule()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm focus:outline-none">
+          <option value="ALL">All Sports (所有項目)</option>
+          <option value="Badminton">Badminton (羽毛球)</option>
+          <option value="Basketball">Basketball (籃球)</option>
+          <option value="Swimming">Swimming (游泳)</option>
+          <option value="Table Tennis">Table Tennis (乒乓球)</option>
+          <option value="eSports">eSports (電子競技)</option>
+          <option value="Fencing">Fencing (擊劍)</option>
+        </select>
+      </div>
 
-                <!-- Date / Status Filter -->
-                <div>
-                    <select id="status-filter" onchange="applyFilters()" class="w-full bg-slate-900/90 text-sm text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-700/80 focus:outline-none focus:border-brand-500 transition cursor-pointer">
-                        <option value="ALL" id="opt-status-all">All Matches / 所有賽事</option>
-                        <option value="LIVE" id="opt-status-live">🔴 Live Now / 進行中</option>
-                        <option value="UPCOMING" id="opt-status-upcoming">⏳ Upcoming / 即將舉行</option>
-                        <option value="MEDAL" id="opt-status-medal">🥇 Medal Events / 爭金賽</option>
-                    </select>
-                </div>
-            </div>
+      <!-- Search Box -->
+      <div class="glass p-4 rounded-xl">
+        <label id="lbl-search" class="block text-xs font-semibold text-slate-400 mb-2 uppercase">Search Matches / Players (搜索賽事/選手)</label>
+        <input type="text" id="search-input" onkeyup="renderSchedule()" placeholder="Search team, athlete, event..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm focus:outline-none focus:border-blue-500">
+      </div>
+    </div>
 
-            <!-- Active Filter Bar & Quick Reset -->
-            <div class="mt-4 pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2">
-                <div class="flex items-center space-x-2">
-                    <span id="ui-results-found">Showing:</span>
-                    <span id="match-count-badge" class="font-bold text-slate-200 bg-slate-800 px-2 py-0.5 rounded-md">0</span>
-                    <span id="ui-matches-label">matches</span>
-                </div>
-                <button onclick="resetFilters()" class="text-brand-400 hover:text-brand-300 font-medium transition flex items-center space-x-1">
-                    <i class="fa-solid fa-rotate-left"></i>
-                    <span id="ui-btn-reset">Reset Filters</span>
-                </button>
-            </div>
-        </section>
+    <!-- Data Refresh Info -->
+    <div class="flex justify-between items-center text-xs text-slate-400 mb-4 px-1">
+      <div id="data-source-status"><i class="fa-solid fa-sync fa-spin mr-1"></i> Fetching latest schedule...</div>
+      <button onclick="fetchScheduleFromWorker()" class="hover:text-white transition"><i class="fa-solid fa-arrows-rotate mr-1"></i> Reload Data</button>
+    </div>
 
-        <section id="events-container" class="space-y-4">
-            <!-- Dynamic Content Injected via JavaScript -->
-        </section>
+    <!-- Event Cards Container -->
+    <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  </main>
 
-        <!-- Empty State Message -->
-        <div id="no-results" class="hidden text-center py-16 glass-card rounded-2xl border border-slate-800">
-            <i class="fa-solid fa-calendar-xmark text-4xl text-slate-600 mb-3"></i>
-            <h3 class="text-lg font-bold text-slate-300" id="ui-no-results-title">No events matching criteria</h3>
-            <p class="text-slate-500 text-sm mt-1" id="ui-no-results-desc">Try clearing your search query or selecting another region filter.</p>
-            <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-semibold transition">
-                Reset All Filters
-            </button>
-        </div>
-    </main>
+  <script>
+    // Configuration & State
+    let currentLang = 'zh'; // 'zh' or 'en'
+    let eventsData = [];
+    
+    // Cloudflare Worker API endpoint (Replace with your actual worker URL)
+    const WORKER_API_URL = "https://asian-games-schedule-api.your-subdomain.workers.dev/api/schedule";
 
-    <footer class="glass-card border-t border-slate-800 mt-12 py-6">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between text-xs text-slate-400 gap-4">
-            <div class="flex items-center space-x-2">
-                <i class="fa-solid fa-bolt text-amber-400"></i>
-                <span id="ui-footer-rights">Asian Games Broadcast Directory & Schedule System. Designed for Cloudflare Pages.</span>
-            </div>
-            <div class="flex items-center space-x-4">
-                <span id="ui-current-region-note" class="text-slate-400">Current Region: <strong id="footer-region-name" class="text-brand-400">Hong Kong</strong></span>
-                <span class="text-slate-600">|</span>
-                <span id="ui-timezone-note" class="text-slate-400">Time Zone: <strong id="footer-tz-name" class="text-emerald-400">Local Time</strong></span>
-            </div>
-        </div>
-    </footer>
+    // Regional Streams Map
+    const BROADCASTERS = {
+      HK: [
+        { name: "HOY TV (77台)", url: "https://hoy.tv/", live: true },
+        { name: "TVB Sports", url: "https://news.tvb.com/tc/sports", live: true },
+        { name: "RTHK 香港電台", url: "https://www.rthk.hk/", live: true }
+      ],
+      TW: [
+        { name: "ELTA Sports 愛爾達體育台", url: "https://eltaott.tv/", live: true },
+        { name: "PTS 公視體育", url: "https://www.pts.org.tw/", live: true }
+      ],
+      CN: [
+        { name: "CCTV-5 體育頻道", url: "https://tv.cctv.com/live/cctv5/", live: true },
+        { name: "Migu Video 咪咕視頻", url: "https://www.miguvideo.com/", live: true }
+      ],
+      JP: [
+        { name: "TBS Asian Games Special", url: "https://www.tbs.co.jp/", live: true },
+        { name: "TVer (Free Stream)", url: "https://tver.jp/", live: true }
+      ],
+      KR: [
+        { name: "KBS Sports", url: "https://sports.kbs.co.kr/", live: true },
+        { name: "MBC Sports", url: "https://imnews.imbc.com/sports/", live: true }
+      ],
+      SG: [
+        { name: "mewatch Asian Games Hub", url: "https://www.mewatch.sg/", live: true }
+      ],
+      MY: [
+        { name: "Astro Arena", url: "https://www.astro.com.my/", live: true },
+        { name: "RTM Klik", url: "https://rtmklik.rtm.gov.my/", live: true }
+      ],
+      INT: [
+        { name: "Official OCA YouTube Channel", url: "https://www.youtube.com/@OlympicCouncilofAsia", live: true }
+      ]
+    };
 
-    <script>
-        // App State
-        let currentLang = 'zh'; // Default: Traditional Chinese ('zh' or 'en')
-        let currentRegion = 'HK'; // Default: Hong Kong
-        let currentTimezoneMode = 'LOCAL'; // 'LOCAL' or 'HOST' (UTC+8)
+    // Static Fallback Data
+    const FALLBACK_EVENTS = [
+      {
+        id: "fb-1",
+        time_utc8: "2026-09-21T09:00:00+08:00",
+        sport_en: "Badminton",
+        sport_zh: "羽毛球",
+        event_en: "Men's Singles Preliminaries",
+        event_zh: "男子單打預賽",
+        participants_en: "Hong Kong vs Japan",
+        participants_zh: "中國香港 vs 日本",
+        venue_en: "Ichinomiya Municipal Gymnasium",
+        venue_zh: "一宮市綜合體育館",
+        is_medal: false,
+        is_live: true
+      },
+      {
+        id: "fb-2",
+        time_utc8: "2026-09-21T18:00:00+08:00",
+        sport_en: "eSports",
+        sport_zh: "電子競技",
+        event_en: "League of Legends Group Stage",
+        event_zh: "英雄聯盟 小組賽",
+        participants_en: "Chinese Taipei vs South Korea",
+        participants_zh: "中華台北 vs 韓國",
+        venue_en: "Aichi Sky Expo",
+        venue_zh: "愛知國際展覽中心",
+        is_medal: true,
+        is_live: false
+      },
+      {
+        id: "fb-3",
+        time_utc8: "2026-09-22T14:30:00+08:00",
+        sport_en: "Table Tennis",
+        sport_zh: "乒乓球",
+        event_en: "Women's Team Finals",
+        event_zh: "女子團體決賽",
+        participants_en: "China vs Japan",
+        participants_zh: "中國 vs 日本",
+        venue_en: "Nagoya City General Gymnasium",
+        venue_zh: "名古屋市綜合體育館",
+        is_medal: true,
+        is_live: false
+      }
+    ];
 
-        // Broadcaster Database by Region
-        const BROADCASTERS = {
-            HK: [
-                { name: "HOY TV (Ch 76, 77)", type: "Free TV / Web", url: "https://hoy.tv", icon: "fa-tv" },
-                { name: "TVB (Jade, Pearl, myTV SUPER)", type: "Free TV / App", url: "https://www.tvb.com", icon: "fa-play" },
-                { name: "RTHK (香港電台)", type: "Public TV", url: "https://www.rthk.hk", icon: "fa-broadcast-tower" },
-                { name: "ViuTV (Ch 99)", type: "Highlights / Select Live", url: "https://viu.tv", icon: "fa-tv" }
-            ],
-            TW: [
-                { name: "ELTA Sports (愛爾達體育台)", type: "Pay TV / OTT", url: "https://eltaott.tv", icon: "fa-play" },
-                { name: "CTS (華視)", type: "Terrestrial TV", url: "https://www.cts.com.tw", icon: "fa-tv" },
-                { name: "EBC Sports (東森新聞/體育)", type: "Cable Channel", url: "https://news.ebc.net.tw", icon: "fa-tv" },
-                { name: "Public Television Service (公視)", type: "Public Channel", url: "https://www.pts.org.tw", icon: "fa-broadcast-tower" }
-            ],
-            CN: [
-                { name: "CCTV-5 (中央電視台體育頻道)", type: "State Broadcaster", url: "https://sports.cctv.com", icon: "fa-tv" },
-                { name: "CCTV-5+ (體育賽事)", type: "HD Channel", url: "https://sports.cctv.com", icon: "fa-tv" },
-                { name: "Yangshipin (央視頻 App)", type: "Official Live Stream", url: "https://www.yangshipin.cn", icon: "fa-mobile-screen" },
-                { name: "Migu Video (咪咕視頻)", type: "Digital OTT", url: "https://www.miguvideo.com", icon: "fa-play" }
-            ],
-            JP: [
-                { name: "TBS Television (TBS系列)", type: "Official Terrestrial", url: "https://www.tbs.co.jp", icon: "fa-tv" },
-                { name: "NHK General / BS1", type: "Public Broadcaster", url: "https://www.nhk.or.jp/sports", icon: "fa-broadcast-tower" },
-                { name: "TVer", type: "Free Catch-up Stream", url: "https://tver.jp", icon: "fa-desktop" }
-            ],
-            KR: [
-                { name: "KBS (1TV / 2TV)", type: "Public Terrestrial", url: "https://sports.kbs.co.kr", icon: "fa-tv" },
-                { name: "MBC Sports", type: "Terrestrial TV", url: "https://imnews.imbc.com", icon: "fa-tv" },
-                { name: "SBS Sports", type: "Network Broadcaster", url: "https://news.sbs.co.kr", icon: "fa-tv" },
-                { name: "AFA / TV Chosun", type: "Cable Rights", url: "http://tvchosun.com", icon: "fa-play" }
-            ],
-            SG: [
-                { name: "Mediacorp Mewatch", type: "Free Live Streaming", url: "https://www.mewatch.sg", icon: "fa-desktop" },
-                { name: "Channel 5", type: "Free-to-air TV", url: "https://www.mediacorp.sg", icon: "fa-tv" },
-                { name: "Singtel TV / GO", type: "Pay Sports Pack", url: "https://www.singtel.com", icon: "fa-play" }
-            ],
-            MY: [
-                { name: "RTM (Sukan RTM / TV Okey)", type: "Free Public Broadcast", url: "https://rtmklik.rtm.gov.my", icon: "fa-tv" },
-                { name: "Astro Arena (Ch 801/802)", type: "Pay TV / Astro GO", url: "https://www.astro.com.my", icon: "fa-play" }
-            ],
-            INT: [
-                { name: "Official Asian Games Channel", type: "YouTube / Official Web", url: "https://www.youtube.com", icon: "fa-globe" },
-                { name: "Olympic Channel Asia", type: "International Feed", url: "https://olympics.com", icon: "fa-video" }
-            ]
-        };
-
-        // Asian Games Match Schedule Dataset
-        // Times stored in UTC ISO format (UTC+8 Hangzhou/Beijing baseline)
-        const EVENT_SCHEDULE = [
-            {
-                id: "AG2026-001",
-                sport: { en: "Table Tennis", zh: "乒乓球" },
-                icon: "fa-table-tennis-paddle-ball",
-                title: { en: "Men's Singles - Gold Medal Match", zh: "男子單打 - 金牌決賽" },
-                stage: { en: "Final Round", zh: "決賽" },
-                timeUTC: "2026-09-21T11:00:00Z", // 19:00 UTC+8
-                venue: { en: "Gongshu Canal Sports Park Gymnasium", zh: "拱墅運河體育公園體育館" },
-                participants: [
-                    { name: { en: "Fan Zhendong", zh: "樊振東" }, team: "CN", flag: "🇨🇳" },
-                    { name: { en: "Lin Yun-Ju", zh: "林昀儒" }, team: "TW", flag: "🇹🇼" }
-                ],
-                isMedal: true,
-                status: "UPCOMING"
-            },
-            {
-                id: "AG2026-002",
-                sport: { en: "Badminton", zh: "羽毛球" },
-                icon: "fa-feather",
-                title: { en: "Men's Singles - Semifinal 1", zh: "男子單打 - 準決賽" },
-                stage: { en: "Semifinals", zh: "準決賽" },
-                timeUTC: "2026-09-21T06:30:00Z", // 14:30 UTC+8
-                venue: { en: "Binjiang Gymnasium", zh: "濱江體育館" },
-                participants: [
-                    { name: { en: "Lee Zii Jia", zh: "李梓嘉" }, team: "MY", flag: "🇲🇾" },
-                    { name: { en: "Naraoka Kodai", zh: "奈良岡功大" }, team: "JP", flag: "🇯🇵" }
-                ],
-                isMedal: false,
-                status: "LIVE"
-            },
-            {
-                id: "AG2026-003",
-                sport: { en: "Swimming", zh: "游泳" },
-                icon: "fa-person-swimming",
-                title: { en: "Women's 200m Freestyle - Final", zh: "女子 200 米自由泳 - 決賽" },
-                stage: { en: "Final Round", zh: "決賽" },
-                timeUTC: "2026-09-21T11:30:00Z", // 19:30 UTC+8
-                venue: { en: "Hangzhou Olympic Sports Centre Aquatic Centre", zh: "杭州奧體中心游泳館" },
-                participants: [
-                    { name: { en: "Siobhan Haughey", zh: "何詩蓓" }, team: "HK", flag: "🇭🇰" },
-                    { name: { en: "Ikee Rikako", zh: "池江璃花子" }, team: "JP", flag: "🇯🇵" },
-                    { name: { en: "Li Bingjie", zh: "李冰潔" }, team: "CN", flag: "🇨🇳" }
-                ],
-                isMedal: true,
-                status: "UPCOMING"
-            },
-            {
-                id: "AG2026-004",
-                sport: { en: "Fencing", zh: "擊劍" },
-                icon: "fa-child-reaching",
-                title: { en: "Men's Foil Individual - Gold Medal Match", zh: "男子花劍個人賽 - 金牌戰" },
-                stage: { en: "Final Round", zh: "決賽" },
-                timeUTC: "2026-09-21T10:00:00Z", // 18:00 UTC+8
-                venue: { en: "Hangzhou Dianzi University Gymnasium", zh: "杭州電子科技大學體育館" },
-                participants: [
-                    { name: { en: "Cheung Ka Long", zh: "張家朗" }, team: "HK", flag: "🇭🇰" },
-                    { name: { en: "Shikine Takahiro", zh: "敷根崇裕" }, team: "JP", flag: "🇯🇵" }
-                ],
-                isMedal: true,
-                status: "UPCOMING"
-            },
-            {
-                id: "AG2026-005",
-                sport: { en: "Esports", zh: "電子競技" },
-                icon: "fa-gamepad",
-                title: { en: "League of Legends - Grand Final", zh: "英雄聯盟 - 總決賽" },
-                stage: { en: "Grand Final", zh: "總決賽" },
-                timeUTC: "2026-09-22T09:00:00Z", // 17:00 UTC+8
-                venue: { en: "China Esports Centre", zh: "中國電競中心" },
-                participants: [
-                    { name: { en: "Team Korea", zh: "韓國隊" }, team: "KR", flag: "🇰🇷" },
-                    { name: { en: "Team China", zh: "中國隊" }, team: "CN", flag: "🇨🇳" }
-                ],
-                isMedal: true,
-                status: "UPCOMING"
-            },
-            {
-                id: "AG2026-006",
-                sport: { en: "Basketball", zh: "籃球" },
-                icon: "fa-basketball",
-                title: { en: "Men's Tournament - Group Stage", zh: "男子籃球 - 小組賽" },
-                stage: { en: "Group Phase", zh: "小組賽" },
-                timeUTC: "2026-09-22T12:00:00Z", // 20:00 UTC+8
-                venue: { en: "Zhejiang University Zijingang Gymnasium", zh: "浙江大學紫金港體育館" },
-                participants: [
-                    { name: { en: "Chinese Taipei", zh: "中華台北" }, team: "TW", flag: "🇹🇼" },
-                    { name: { en: "Japan", zh: "日本隊" }, team: "JP", flag: "🇯🇵" }
-                ],
-                isMedal: false,
-                status: "UPCOMING"
-            },
-            {
-                id: "AG2026-007",
-                sport: { en: "Athletics", zh: "田徑" },
-                icon: "fa-person-running",
-                title: { en: "Men's 100m - Final", zh: "男子 100 米 - 決賽" },
-                stage: { en: "Final Round", zh: "決賽" },
-                timeUTC: "2026-09-22T13:40:00Z", // 21:40 UTC+8
-                venue: { en: "Hangzhou Olympic Sports Centre Stadium", zh: "杭州奧體中心體育場 (大蓮花)" },
-                participants: [
-                    { name: { en: "Xie Zhenye", zh: "謝震業" }, team: "CN", flag: "🇨🇳" },
-                    { name: { en: "Puripol Boonson", zh: "泰國飛人" }, team: "TH", flag: "🇹🇭" },
-                    { name: { en: "Lalu Muhammad Zohri", zh: "印尼飛人" }, team: "ID", flag: "🇮🇩" }
-                ],
-                isMedal: true,
-                status: "UPCOMING"
-            },
-            {
-                id: "AG2026-008",
-                sport: { en: "Football", zh: "足球" },
-                icon: "fa-futbol",
-                title: { en: "Men's Quarter-Final", zh: "男子足球 - 半準決賽" },
-                stage: { en: "Quarter-Final", zh: "半準決賽 (8強)" },
-                timeUTC: "2026-09-23T11:30:00Z", // 19:30 UTC+8
-                venue: { en: "Huanglong Sports Centre Stadium", zh: "黃龍體育中心體育場" },
-                participants: [
-                    { name: { en: "Hong Kong, China", zh: "中國香港" }, team: "HK", flag: "🇭🇰" },
-                    { name: { en: "South Korea", zh: "韓國" }, team: "KR", flag: "🇰🇷" }
-                ],
-                isMedal: false,
-                status: "UPCOMING"
-            }
-        ];
-
-        // UI Language Text Dictionary
-        const UI_TEXT = {
-            en: {
-                appTitle: "ASIAN GAMES HUB",
-                appSubtitle: "Live Schedule & Broadcasters",
-                labelRegion: "Region:",
-                tzLocal: "My Local Time",
-                tzHost: "Host Time (UTC+8)",
-                langText: "繁體中文",
-                heroTitle: "Asian Games Multi-Region Schedule & Channels",
-                heroDesc: "Select your region to inspect localized broadcast rights, television channels, and online streams for all high-stakes Asian Games matchups.",
-                badgeLive: "LIVE EVENT COVERAGE",
-                statSports: "SPORTS",
-                statEvents: "MATCHES",
-                statChannels: "BROADCASTERS",
-                optSportAll: "All Sports / 項目",
-                optTeamAll: "All Teams / 參賽地區",
-                optStatusAll: "All Matches",
-                optStatusLive: "🔴 Live Now",
-                optStatusUpcoming: "⏳ Upcoming",
-                optStatusMedal: "🥇 Medal Events",
-                resultsFound: "Showing:",
-                matchesLabel: "matches found",
-                btnReset: "Reset Filters",
-                noResultsTitle: "No Events Found",
-                noResultsDesc: "Try adjusting your search keywords or clearing filter constraints.",
-                watchOn: "Available Live Channels in",
-                venue: "Venue",
-                stage: "Stage",
-                medalBadge: "MEDAL EVENT",
-                liveNow: "LIVE NOW",
-                footerRights: "Asian Games Broadcast Directory & Schedule System. Designed for Cloudflare Pages.",
-                currentRegionNote: "Current Region:",
-                timezoneNote: "Time Zone:"
-            },
-            zh: {
-                appTitle: "亞洲運動會賽程與直播中心",
-                appSubtitle: "賽事日程與各地轉播權總覽",
-                labelRegion: "選擇地區:",
-                tzLocal: "我的本地時間",
-                tzHost: "主辦地時間 (UTC+8)",
-                langText: "English",
-                heroTitle: "亞運會跨地區賽程與獨家轉播頻道",
-                heroDesc: "切換您所在地區，動態查詢電視台、OTT網絡直播平台及賽事詳細時間（自動換算本地時區）。",
-                badgeLive: "實時賽事轉播資訊",
-                statSports: "體育項目",
-                statEvents: "重點賽事",
-                statChannels: "覆蓋頻道",
-                optSportAll: "所有運動項目 (All Sports)",
-                optTeamAll: "所有參賽代表隊 (All Teams)",
-                optStatusAll: "所有比賽狀態",
-                optStatusLive: "🔴 進行中賽事 (Live)",
-                optStatusUpcoming: "⏳ 即將舉行 (Upcoming)",
-                optStatusMedal: "🥇 爭金牌決賽 (Medal Events)",
-                resultsFound: "已找到：",
-                matchesLabel: "場比賽",
-                btnReset: "重置所有篩選",
-                noResultsTitle: "未找到符合條件的賽事",
-                noResultsDesc: "請嘗試搜尋其他關鍵字，或取消個別篩選條件。",
-                watchOn: "可收看轉播頻道 / 平台：",
-                venue: "比賽場館",
-                stage: "賽事階段",
-                medalBadge: "獎牌決賽",
-                liveNow: "進行中",
-                footerRights: "亞洲運動會賽程與直播導航系統。支持 Cloudflare Pages 靜態部署。",
-                currentRegionNote: "當前切換地區：",
-                timezoneNote: "顯示時區："
-            }
-        };
-
-        window.onload = function() {
-            populateFilterOptions();
-            updateUIRegionDisplay();
-            renderEvents();
-            updateDynamicTexts();
-        };
-
-        function populateFilterOptions() {
-            const sportFilter = document.getElementById('sport-filter');
-            const participantFilter = document.getElementById('participant-filter');
-
-            // Unique Sports
-            const sports = [...new Set(EVENT_SCHEDULE.map(e => JSON.stringify(e.sport)))].map(s => JSON.parse(s));
-            sports.forEach(s => {
-                const opt = document.createElement('option');
-                opt.value = s.en;
-                opt.textContent = `${s.zh} (${s.en})`;
-                sportFilter.appendChild(opt);
-            });
-
-            // Unique Team Codes
-            const teamsMap = new Map();
-            EVENT_SCHEDULE.forEach(e => {
-                e.participants.forEach(p => {
-                    if (!teamsMap.has(p.team)) {
-                        teamsMap.set(p.team, { name: p.name, flag: p.flag });
-                    }
-                });
-            });
-
-            teamsMap.forEach((val, key) => {
-                const opt = document.createElement('option');
-                opt.value = key;
-                opt.textContent = `${val.flag} ${val.name.zh} (${val.name.en})`;
-                participantFilter.appendChild(opt);
-            });
+    async function fetchScheduleFromWorker() {
+      const statusEl = document.getElementById('data-source-status');
+      statusEl.innerHTML = `<i class="fa-solid fa-sync fa-spin mr-1"></i> Connecting to Worker API...`;
+      
+      try {
+        const res = await fetch(WORKER_API_URL);
+        if (!res.ok) throw new Error("Worker unreachable");
+        const data = await res.json();
+        
+        if (data.events && data.events.length > 0) {
+          eventsData = data.events;
+          statusEl.innerHTML = `<i class="fa-solid fa-check text-green-400 mr-1"></i> Live feed via ${data.source || 'Asia Sports Hub'}`;
+        } else {
+          throw new Error("Empty feed response");
         }
+      } catch (e) {
+        console.warn("Worker fetch failed, using fallback schedule data.", e);
+        eventsData = FALLBACK_EVENTS;
+        statusEl.innerHTML = `<i class="fa-solid fa-database text-yellow-400 mr-1"></i> Offline Mode (Standard Schedule Dataset)`;
+      }
+      
+      renderSchedule();
+    }
 
-        function toggleLanguage() {
-            currentLang = currentLang === 'zh' ? 'en' : 'zh';
-            updateDynamicTexts();
-            renderEvents();
-        }
+    function toggleLanguage() {
+      currentLang = currentLang === 'zh' ? 'en' : 'zh';
+      document.getElementById('lang-label').innerText = currentLang === 'zh' ? 'English' : '繁體中文';
+      
+      // Update Static Labels
+      document.getElementById('ui-title').innerText = currentLang === 'zh' ? '亞運會賽程與各國直播頻道' : 'Asian Games Schedule & Live Directory';
+      document.getElementById('lbl-region').innerText = currentLang === 'zh' ? '選擇所在地區 (Select Region)' : 'Select Your Region / Country';
+      document.getElementById('lbl-sport').innerText = currentLang === 'zh' ? '按體育項目篩選 (Filter Sport)' : 'Filter by Sport';
+      document.getElementById('lbl-search').innerText = currentLang === 'zh' ? '搜尋賽事 / 選手 (Search)' : 'Search Matches / Athletes';
+      
+      renderSchedule();
+    }
 
-        function updateDynamicTexts() {
-            const t = UI_TEXT[currentLang];
-            document.getElementById('ui-app-title').textContent = t.appTitle;
-            document.getElementById('ui-app-subtitle').textContent = t.appSubtitle;
-            document.getElementById('ui-label-region').textContent = t.labelRegion;
-            document.getElementById('ui-lang-text').textContent = t.langText;
-            document.getElementById('ui-hero-title').textContent = t.heroTitle;
-            document.getElementById('ui-hero-desc').textContent = t.heroDesc;
-            document.getElementById('ui-badge-live').textContent = t.badgeLive;
-            document.getElementById('ui-stat-sports').textContent = t.statSports;
-            document.getElementById('ui-stat-events').textContent = t.statEvents;
-            document.getElementById('ui-stat-channels').textContent = t.statChannels;
-            document.getElementById('opt-tz-local').textContent = t.tzLocal;
+    function renderSchedule() {
+      const container = document.getElementById('events-grid');
+      const selectedRegion = document.getElementById('region-select').value;
+      const selectedSport = document.getElementById('sport-select').value;
+      const searchQuery = document.getElementById('search-input').value.toLowerCase();
+      const tzMode = document.getElementById('tz-select').value;
+
+      container.innerHTML = "";
+
+      const filteredEvents = eventsData.filter(ev => {
+        const matchesSport = selectedSport === "ALL" || ev.sport_en === selectedSport;
+        const nameToSearch = `${ev.sport_en} ${ev.sport_zh} ${ev.event_en} ${ev.event_zh} ${ev.participants_en} ${ev.participants_zh}`.toLowerCase();
+        const matchesSearch = nameToSearch.includes(searchQuery);
+        return matchesSport && matchesSearch;
+      });
+
+      if (filteredEvents.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-12 glass rounded-2xl">
+            <i class="fa-solid fa-calendar-xmark text-4xl text-slate-500 mb-3"></i>
+            <p class="text-slate-400">${currentLang === 'zh' ? '沒有找到符合條件的賽事記錄' : 'No schedule matches found.'}</p>
+          </div>`;
+        return;
+      }
+
+      const regionStreams = BROADCASTERS[selectedRegion] || BROADCASTERS.INT;
+
+      filteredEvents.forEach(ev => {
+        const eventTime = new Date(ev.time_utc8);
+        const formattedTime = tzMode === 'local' 
+          ? eventTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) + " (Local)"
+          : eventTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Shanghai' }) + " (UTC+8)";
+
+        const formattedDate = eventTime.toLocaleDateString([], { month: 'short', day: 'numeric', weekday: 'short' });
+
+        const card = document.createElement('div');
+        card.className = "glass rounded-xl p-5 flex flex-col justify-between hover:border-slate-500 transition shadow-lg relative overflow-hidden";
+
+        card.innerHTML = `
+          ${ev.is_medal ? `<div class="absolute top-0 right-0 bg-amber-500 text-black text-[10px] font-extrabold px-3 py-0.5 rounded-bl-lg uppercase tracking-wider"><i class="fa-solid fa-medal mr-1"></i>Medal Event</div>` : ''}
+          
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xs font-bold px-2.5 py-1 rounded-md bg-slate-800 text-red-400 border border-slate-700">
+                ${currentLang === 'zh' ? ev.sport_zh : ev.sport_en}
+              </span>
+              <span class="text-xs text-slate-400 font-mono">
+                <i class="fa-regular fa-clock mr-1"></i>${formattedDate} ${formattedTime}
+              </span>
+            </div>
+
+            <h3 class="text-lg font-bold mb-1 text-slate-100">
+              ${currentLang === 'zh' ? ev.event_zh : ev.event_en}
+            </h3>
+
+            <p class="text-sm font-medium text-slate-300 mb-3 flex items-center gap-1">
+              <i class="fa-solid fa-users text-xs text-slate-500"></i>
+              ${currentLang === 'zh' ? ev.participants_zh : ev.participants_en}
+            </p>
+
+            <p class="text-xs text-slate-400 mb-4">
+              <i class="fa-solid fa-location-dot mr-1"></i>${currentLang === 'zh' ? ev.venue_zh : ev.venue_en}
+            </p>
+          </div>
+
+          <!-- Broadcasters Section -->
+          <div class="pt-3 border-t border-slate-700/60">
+            <div class="text-[11px] font-semibold text-slate-400 mb-2 uppercase tracking-wider flex items-center justify-between">
+              <span>${currentLang === 'zh' ? '可用直播頻道' : 'Live Broadcasters'}</span>
+              <span class="text-red-400 font-mono text-[10px]">${selectedRegion}</span>
+            </div>
             
-            document.getElementById('opt-sport-all').textContent = t.optSportAll;
-            document.getElementById('opt-team-all').textContent = t.optTeamAll;
-            document.getElementById('opt-status-all').textContent = t.optStatusAll;
-            document.getElementById('opt-status-live').textContent = t.optStatusLive;
-            document.getElementById('opt-status-upcoming').textContent = t.optStatusUpcoming;
-            document.getElementById('opt-status-medal').textContent = t.optStatusMedal;
+            <div class="flex flex-wrap gap-2">
+              ${regionStreams.map(stream => `
+                <a href="${stream.url}" target="_blank" rel="noopener noreferrer" class="text-xs px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-red-600/20 hover:text-red-300 text-slate-200 border border-slate-700 hover:border-red-500/50 transition flex items-center gap-1.5">
+                  <i class="fa-solid fa-circle-play text-red-500 text-[10px]"></i>
+                  ${stream.name}
+                </a>
+              `).join('')}
+            </div>
+          </div>
+        `;
 
-            document.getElementById('ui-results-found').textContent = t.resultsFound;
-            document.getElementById('ui-matches-label').textContent = t.matchesLabel;
-            document.getElementById('ui-btn-reset').textContent = t.btnReset;
-            document.getElementById('ui-no-results-title').textContent = t.noResultsTitle;
-            document.getElementById('ui-no-results-desc').textContent = t.noResultsDesc;
-            document.getElementById('ui-footer-rights').textContent = t.footerRights;
-            document.getElementById('ui-current-region-note').childNodes[0].textContent = t.currentRegionNote + " ";
-            document.getElementById('ui-timezone-note').childNodes[0].textContent = t.timezoneNote + " ";
+        container.appendChild(card);
+      });
+    }
 
-            document.getElementById('footer-tz-name').textContent = currentTimezoneMode === 'LOCAL' ? t.tzLocal : t.tzHost;
-        }
-
-        function handleRegionChange(val) {
-            currentRegion = val;
-            updateUIRegionDisplay();
-            renderEvents();
-        }
-
-        function handleTimezoneChange(val) {
-            currentTimezoneMode = val;
-            document.getElementById('footer-tz-name').textContent = val === 'LOCAL' ? UI_TEXT[currentLang].tzLocal : UI_TEXT[currentLang].tzHost;
-            renderEvents();
-        }
-
-        function updateUIRegionDisplay() {
-            const regionNames = {
-                HK: "Hong Kong (香港)",
-                TW: "Taiwan (台灣)",
-                CN: "China (中國大陸)",
-                JP: "Japan (日本)",
-                KR: "South Korea (韓國)",
-                SG: "Singapore (新加坡)",
-                MY: "Malaysia (馬來西亞)",
-                INT: "International / Global"
-            };
-            document.getElementById('footer-region-name').textContent = regionNames[currentRegion] || currentRegion;
-        }
-
-        function formatEventTime(isoString) {
-            const date = new Date(isoString);
-            if (currentTimezoneMode === 'HOST') {
-                // Force display in UTC+8 (Hangzhou Host Time)
-                const options = {
-                    timeZone: 'Asia/Shanghai',
-                    month: 'short',
-                    day: 'numeric',
-                    weekday: 'short',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false
-                };
-                return date.toLocaleString(currentLang === 'zh' ? 'zh-HK' : 'en-US', options) + " (UTC+8)";
-            } else {
-                // User Local Timezone
-                const options = {
-                    month: 'short',
-                    day: 'numeric',
-                    weekday: 'short',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false
-                };
-                return date.toLocaleString(currentLang === 'zh' ? 'zh-HK' : 'en-US', options) + " (Local)";
-            }
-        }
-
-        function applyFilters() {
-            renderEvents();
-        }
-
-        function resetFilters() {
-            document.getElementById('search-input').value = '';
-            document.getElementById('sport-filter').value = 'ALL';
-            document.getElementById('participant-filter').value = 'ALL';
-            document.getElementById('status-filter').value = 'ALL';
-            renderEvents();
-        }
-
-        function renderEvents() {
-            const container = document.getElementById('events-container');
-            const noResults = document.getElementById('no-results');
-            const matchCountBadge = document.getElementById('match-count-badge');
-
-            const searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
-            const selectedSport = document.getElementById('sport-filter').value;
-            const selectedTeam = document.getElementById('participant-filter').value;
-            const selectedStatus = document.getElementById('status-filter').value;
-
-            // Filter logic
-            const filtered = EVENT_SCHEDULE.filter(event => {
-                // Search filter
-                const searchables = [
-                    event.sport.en, event.sport.zh,
-                    event.title.en, event.title.zh,
-                    event.venue.en, event.venue.zh,
-                    ...event.participants.flatMap(p => [p.name.en, p.name.zh, p.team])
-                ].join(' ').toLowerCase();
-
-                if (searchQuery && !searchables.includes(searchQuery)) return false;
-
-                // Sport filter
-                if (selectedSport !== 'ALL' && event.sport.en !== selectedSport) return false;
-
-                // Team / Participant filter
-                if (selectedTeam !== 'ALL' && !event.participants.some(p => p.team === selectedTeam)) return false;
-
-                // Status filter
-                if (selectedStatus === 'LIVE' && event.status !== 'LIVE') return false;
-                if (selectedStatus === 'UPCOMING' && event.status !== 'UPCOMING') return false;
-                if (selectedStatus === 'MEDAL' && !event.isMedal) return false;
-
-                return true;
-            });
-
-            // Update Count
-            matchCountBadge.textContent = filtered.length;
-
-            if (filtered.length === 0) {
-                container.innerHTML = '';
-                noResults.classList.remove('hidden');
-                return;
-            } else {
-                noResults.classList.add('hidden');
-            }
-
-            // Broadcasters for chosen region
-            const regionBroadcasters = BROADCASTERS[currentRegion] || BROADCASTERS.INT;
-
-            // Render Cards HTML
-            container.innerHTML = filtered.map(event => {
-                const sportTitle = event.sport[currentLang];
-                const matchTitle = event.title[currentLang];
-                const venueName = event.venue[currentLang];
-                const stageName = event.stage[currentLang];
-                const timeFormatted = formatEventTime(event.timeUTC);
-
-                const isLive = event.status === 'LIVE';
-
-                return `
-                <div class="glass-card rounded-2xl p-5 sm:p-6 transition hover:border-slate-700 shadow-lg relative overflow-hidden group">
-                    ${event.isMedal ? `<div class="absolute top-0 right-0 bg-gradient-to-l from-amber-500 to-amber-600 text-slate-950 font-extrabold text-[10px] uppercase tracking-wider px-3 py-1 rounded-bl-xl flex items-center gap-1 shadow-md">
-                        <i class="fa-solid fa-medal text-xs"></i> ${UI_TEXT[currentLang].medalBadge}
-                    </div>` : ''}
-
-                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                        <!-- Left Info: Sport, Time & Title -->
-                        <div class="space-y-3 flex-1">
-                            <div class="flex flex-wrap items-center gap-2">
-                                <span class="px-3 py-1 rounded-lg bg-brand-500/10 text-brand-400 font-semibold text-xs border border-brand-500/20 flex items-center space-x-1.5">
-                                    <i class="fa-solid ${event.icon}"></i>
-                                    <span>${sportTitle}</span>
-                                </span>
-                                ${isLive ? `<span class="px-2.5 py-0.5 rounded-full bg-red-500/20 text-red-400 font-bold text-xs border border-red-500/30 flex items-center gap-1.5 animate-pulse">
-                                    <span class="w-2 h-2 rounded-full bg-red-500"></span> ${UI_TEXT[currentLang].liveNow}
-                                </span>` : ''}
-                                <span class="text-xs text-slate-400 flex items-center space-x-1">
-                                    <i class="fa-regular fa-clock"></i>
-                                    <span class="font-medium">${timeFormatted}</span>
-                                </span>
-                            </div>
-
-                            <h3 class="text-lg sm:text-xl font-bold text-white group-hover:text-brand-400 transition">
-                                ${matchTitle}
-                            </h3>
-
-                            <!-- Participants -->
-                            <div class="flex flex-wrap items-center gap-4 py-1">
-                                ${event.participants.map(p => `
-                                    <div class="flex items-center space-x-2 bg-slate-900/60 px-3 py-1.5 rounded-xl border border-slate-800">
-                                        <span class="text-base">${p.flag}</span>
-                                        <span class="text-sm font-semibold text-slate-200">${p.name[currentLang]}</span>
-                                    </div>
-                                `).join('<span class="text-xs font-bold text-slate-600">VS</span>')}
-                            </div>
-
-                            <!-- Venue & Stage info -->
-                            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
-                                <div><i class="fa-solid fa-layer-group text-slate-500 mr-1"></i>${UI_TEXT[currentLang].stage}: <span class="text-slate-300 font-medium">${stageName}</span></div>
-                                <div><i class="fa-solid fa-location-dot text-slate-500 mr-1"></i>${UI_TEXT[currentLang].venue}: <span class="text-slate-300 font-medium">${venueName}</span></div>
-                            </div>
-                        </div>
-
-                        <!-- Right Side: Region Live Broadcasters Links -->
-                        <div class="lg:w-72 bg-slate-900/80 p-4 rounded-xl border border-slate-800/80 flex flex-col justify-between shrink-0">
-                            <div class="text-xs font-bold text-slate-400 mb-2 flex items-center justify-between">
-                                <span>${UI_TEXT[currentLang].watchOn}</span>
-                                <span class="text-brand-400 font-black">${currentRegion}</span>
-                            </div>
-                            
-                            <div class="space-y-2">
-                                ${regionBroadcasters.map(b => `
-                                    <a href="${b.url}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-2 rounded-lg bg-slate-800/70 hover:bg-brand-600/20 hover:border-brand-500/40 border border-slate-700/50 transition group/link text-xs">
-                                        <div class="flex items-center space-x-2 overflow-hidden">
-                                            <i class="fa-solid ${b.icon} text-brand-400 shrink-0"></i>
-                                            <span class="font-semibold text-slate-200 group-hover/link:text-brand-300 truncate">${b.name}</span>
-                                        </div>
-                                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-500 group-hover/link:text-brand-400 shrink-0 ml-1"></i>
-                                    </a>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                `;
-            }).join('');
-        }
-    </script>
+    // Initialize Application
+    document.addEventListener('DOMContentLoaded', fetchScheduleFromWorker);
+  </script>
 </body>
 </html>
